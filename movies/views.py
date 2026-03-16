@@ -37,14 +37,14 @@ class MovieStatsView(views.APIView):
         total_movies = self.queryset.count()
         movies_by_genre = self.queryset.values('genre__name').annotate(count=Count('id'))
         total_reviews = Review.objects.count()
-        average_stats = Review.objects.aggregate(avg_stars=Avg('stars'))['avg_stars']
+        average_stars = Review.objects.aggregate(avg_stars=Avg('stars'))['avg_stars']
         # Montar resposta
         # Devolve resposta pro user com estatísticas
         data = {
             'total_movies': total_movies,
             'movies_by_genre': movies_by_genre,
             'total_reviews': total_reviews,
-            'average_stars': round(average_stats, 1) if average_stats else 0,
+            'average_stars': round(average_stars, 1) if average_stars else 0,
         }
         serializer = MovieStatsSerializer(data=data)
         serializer.is_valid(raise_exception=True)
